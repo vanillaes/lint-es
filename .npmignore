@@ -1,0 +1,4 @@
+.github/
+.vscode/
+**/*.spec.js
+**/__tests__/**
