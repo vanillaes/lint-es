@@ -1,0 +1,38 @@
+{
+  "name": "lint",
+  "version": "0.0.0",
+  "description": "Modern linting for ECMAScript Modules",
+  "keywords": [
+    "ecmascript",
+    "esm",
+    "esmodules",
+    "typescript",
+    "cli",
+    "developer-tools",
+    "lint",
+    "eslint",
+    "standard",
+    "neostandard"
+  ],
+  "repository": "https://github.com/vanillaes/lint",
+  "author": "Evan Plaice <evanplaice@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "lint-es": "bin/lint.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "test": "esmtk test",
+    "lint": "esmtk lint",
+    "types": "esmtk types src/index.js",
+    "typings": "esmtk typings src/index.js",
+    "clean": "esmtk clean --typings",
+    "preview": "esmtk preview"
+  }
+}
