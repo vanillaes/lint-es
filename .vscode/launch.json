@@ -20,7 +20,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint.js",
+            "program": "${workspaceFolder}/bin/lint-es.js",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
         },

@@ -1,5 +1,7 @@
-import { ESLint } from 'eslint'
 import config from './configs/eslint.config.js'
+import { readFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { ESLint } from 'eslint'
 
 /**
  * Lint the following files
@@ -7,12 +9,23 @@ import config from './configs/eslint.config.js'
  */
 export async function lint (pattern) {
   const patterns = pattern.includes(',') ? pattern.split(',') : [pattern]
+  let ignores = [] // TODO: replace [] with --ignore input
+
+  // defaults
+  const defaults = ['node_modules/', 'coverage/', 'vendor/', '**/*.min.js', '.*']
+  // .gitignore
+  const gitignores = await readGitIgnore(process.cwd()) // TODO: replace with `root`
+  // combine
+  ignores = [...defaults, ...gitignores]
+  // de-duplicate
+  ignores = [...new Set(ignores)]
 
   let results = []
   try {
     const eslint = new ESLint({
       overrideConfigFile: true,
-      overrideConfig: config
+      overrideConfig: config,
+      ignorePatterns: ignores
     })
     results = await eslint.lintFiles(patterns)
   } catch (err) {
@@ -52,4 +65,18 @@ export async function lint (pattern) {
   }
 
   process.exitCode = hasErrors ? 1 : 0
+}
+
+/**
+ * Read .gitignore
+ * @param {string} root the root path
+ * @returns {string[]} a comma-deliminated list of ignore globs
+ */
+async function readGitIgnore (root) {
+  const path = join(root, '.gitignore')
+  const contents = await readFile(path, 'utf8')
+  return contents
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('#'))
 }
