@@ -10,10 +10,10 @@ const program = new Command()
   .description('Modern linting for ECMAScript Modules')
   .version(pkg.version, '-v, --version')
 
-program.argument('[pattern]', 'The pattern of file(s) to match', '**/*.js')
-  .description('Lint files matching the provided pattern (default *.spec.js)')
-  .usage(`lint-es [...options] [pattern]
-    If [pattern] is omitted, all JavaScript source files (**/*.js)
+program.argument('[file]', 'File(s) to lint', '**/*.js')
+  .description('Lint file(s) matching the provided pattern (default *.spec.js)')
+  .usage(`lint-es [...options] [files...]
+    If [files...] is omitted, all JavaScript source files (**/*.js)
     in the current working directory are checked, recursively.
 
     Certain paths (node_modules/, coverage/, vendor/, *.min.js, hidden files)
@@ -22,10 +22,10 @@ program.argument('[pattern]', 'The pattern of file(s) to match', '**/*.js')
     Paths in a project's .gitignore file are also automatically ignored.
   `)
   .option('--cwd [cwd]', 'The working directory (default process.cwd())', process.cwd())
-  .option('--fix', 'Attempt to automatically fix linting issues', false)
+  .option('--fix', 'Attempt to automatically fix linting issues')
   .option('--ignore <ignore>', 'Specify files to ignore')
-  .action((pattern, options) => {
-    lint(pattern, options)
+  .action((file, options) => {
+    lint(file, options)
   })
 
 program.parse(process.argv)

@@ -5,12 +5,10 @@ import { ESLint } from 'eslint'
 
 /**
  * Lint the following files
- * @param {string} pattern the pattern(s) of files to include
+ * @param {string} file the pattern(s) of file(s) to include
  * @param {string | boolean | string[] | undefined} options lint options
  */
-export async function lint (pattern, options) {
-  const patterns = pattern.includes(',') ? pattern.split(',') : [pattern]
-
+export async function lint (file, options) {
   const fix = options?.fix ? options.fix : false
 
   const cwd = `${resolve(options?.cwd)}`
@@ -21,6 +19,13 @@ export async function lint (pattern, options) {
     return
   }
 
+  // [file] argument
+  let files = []
+  if (file) {
+    files = file.includes(',') ? file.split(',') : [file]
+  }
+
+  // --ignore option
   let ignores = []
   if (options?.ignore) {
     ignores = options.ignore.includes(',') ? options.ignore.split(',') : [options.ignore]
@@ -43,7 +48,7 @@ export async function lint (pattern, options) {
       overrideConfig: config,
       fix
     })
-    results = await eslint.lintFiles(patterns)
+    results = await eslint.lintFiles(files)
 
     if (fix) {
       await ESLint.outputFixes(results)

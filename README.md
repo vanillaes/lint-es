@@ -23,9 +23,9 @@ Modern linting for ECMAScript Modules based on **[StandardJS][]**.
 
 ### Arguments
 
-`lint-es [...options] [pattern]`
+`lint-es [...options] [files...]`
 
-- `[pattern]` - pattern of files to match (default `**/*.js`)
+- `[files]` - file(s) to lint (default `**/*.js`)
 - `--cwd [cwd]` - The working directory (default `process.cwd()`)
 - `--fix` - Automatically fix problems
 - `--ignore [ignore(s)]` - Specify files to ignore
@@ -37,7 +37,7 @@ Modern linting for ECMAScript Modules based on **[StandardJS][]**.
 lint-es
 
 ```sh
-# lint the source (matching a different pattern)
+# lint the source (matching a different file(s))
 lint-es '**/*.mjs'
 
 # lint the source (change the root)
@@ -50,7 +50,7 @@ lint-es --fix
 lint-es --ignore test1/,test2/**/*
 ```
 
-**Note: In Linux/OSX the matcher patterns must be delimited in quotes.**
+**Note: In Linux/OSX, matcher patterns must be delimited in quotes.**
 
 [StandardJS]: https://standardjs.com/
 [NeoStandard]: https://github.com/neostandard/neostandard

@@ -8,7 +8,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint.js",
+            "program": "${workspaceFolder}/bin/lint-es.js",
             "cwd": "${workspaceFolder}",
             "args": ["--version"],
             "console": "integratedTerminal",
@@ -21,6 +21,18 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/bin/lint-es.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+        },
+        {
+            "name": "Lint [files...]",
+            "type": "node",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/bin/lint-es.js",
+            "args": ["**/*.mjs"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
         },
