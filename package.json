@@ -45,5 +45,10 @@
   },
   "devDependencies": {
     "@vanillaes/esmtk": "^0.24.3"
+  },
+  "lint": {
+    "files": "*/**.mjs",
+    "fix": true,
+    "ignore": [ "test/" ]
   }
 }

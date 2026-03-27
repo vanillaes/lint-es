@@ -9,8 +9,6 @@ import { ESLint } from 'eslint'
  * @param {string | boolean | string[] | undefined} options lint options
  */
 export async function lint (file, options) {
-  const fix = options?.fix ? options.fix : false
-
   const cwd = `${resolve(options?.cwd)}`
   const exists = await fileExists(cwd)
   if (!exists) {
@@ -19,23 +17,21 @@ export async function lint (file, options) {
     return
   }
 
+  // check package.json config
+  let { files, fix, ignores } = await applyPackageJSON(cwd, { files: [], fix: false, ignores: [] })
+
   // [file] argument
-  let files = []
   if (file) {
     files = file.includes(',') ? file.split(',') : [file]
   }
 
   // --ignore option
-  let ignores = []
   if (options?.ignore) {
     ignores = options.ignore.includes(',') ? options.ignore.split(',') : [options.ignore]
   }
-  // defaults
-  const defaults = ['node_modules/', 'coverage/', 'vendor/', '**/*.min.js', '.*']
-  // .gitignore
-  const gitignores = await readGitIgnore(cwd)
-  // combine
-  ignores = [...ignores, ...defaults, ...gitignores]
+  const defaultIgnores = ['node_modules/', 'coverage/', 'vendor/', '**/*.min.js', '.*']
+  const gitIgnores = await readGitIgnore(cwd)
+  ignores = [...ignores, ...defaultIgnores, ...gitIgnores]
   // de-duplicate
   ignores = [...new Set(ignores)]
 
@@ -93,6 +89,20 @@ export async function lint (file, options) {
 }
 
 /**
+ * Check if a file/folder exists
+ * @param {string} path the path to the file/folder
+ * @returns {Promise<boolean>} true if the file/folder exists, false otherwise
+ */
+export async function fileExists (path) {
+  try {
+    await access(path, constants.F_OK)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
+/**
  * Read .gitignore
  * @param {string} cwd the current working directory
  * @returns {string[]} a comma-deliminated list of ignore globs
@@ -111,15 +121,52 @@ async function readGitIgnore (cwd) {
 }
 
 /**
- * Check if a file/folder exists
- * @param {string} path the path to the file/folder
- * @returns {Promise<boolean>} true if the file/folder exists, false otherwise
+ * Read Config from package.json
+ * @param {string} cwd the current working directory
+ * @param {dict} options a dict of config options
+ * @returns {dict} a dict of config options
  */
-export async function fileExists (path) {
-  try {
-    await access(path, constants.F_OK)
-    return true
-  } catch (error) {
-    return false
+async function applyPackageJSON (cwd, options = {}) {
+  const path = join(cwd, 'package.json')
+  const exists = await fileExists(path)
+  if (!exists) {
+    return options
   }
+
+  const contents = await readFile(path, 'utf8')
+  const pkg = JSON.parse(contents)
+
+  if (!Object.hasOwn(pkg, 'lint')) {
+    return options
+  }
+
+  if (pkg?.lint?.files) {
+    if (!Array.isArray(pkg.lint.files) && typeof pkg.lint.files !== 'string') {
+      return options
+    }
+
+    if (Array.isArray(pkg.lint.files)) {
+      options.files = pkg.lint.files
+    }
+
+    if (typeof pkg.lint.files === 'string') {
+      options.files = [pkg.lint.files]
+    }
+  }
+
+  if (pkg?.lint?.fix) {
+    if (typeof pkg.lint.fix !== 'boolean') {
+      return options
+    }
+    options.fix = pkg.lint.fix
+  }
+
+  if (pkg?.lint?.ignore) {
+    if (!Array.isArray(pkg.lint.ignore)) {
+      return options
+    }
+    options.ignores = pkg.lint.ignore
+  }
+
+  return options
 }

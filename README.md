@@ -52,6 +52,24 @@ lint-es --ignore test1/,test2/**/*
 
 **Note: In Linux/OSX, matcher patterns must be delimited in quotes.**
 
+## Configuration
+
+Project-level config can be defined in `package.json`
+
+*package.json*
+```json
+{
+  "lint" {
+    files: [ "**.*.mjs" ],
+    fix: true,
+    ignore: [ "test/**.*" ]
+  }
+}
+```
+
+**Note: Configuration defined in the command-line will take precedence over `package.json` configuration.**
+
+
 [StandardJS]: https://standardjs.com/
 [NeoStandard]: https://github.com/neostandard/neostandard
 [eslint-plugin-jsdoc]: https://github.com/gajus/eslint-plugin-jsdoc
