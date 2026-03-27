@@ -63,9 +63,9 @@ Project-level config can be defined in `package.json`
 ```json
 {
   "lint" {
-    files: [ "**.*.mjs" ],
-    fix: true,
-    ignore: [ "test/**.*" ]
+    "files": [ "**.*.mjs" ],
+    "fix": true,
+    "ignore": [ "test/**.*" ]
   }
 }
 ```
