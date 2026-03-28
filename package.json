@@ -43,14 +43,14 @@
     "eslint-plugin-jsdoc": "^62.8.1",
     "neostandard": "^0.13.0"
   },
-  "devDependencies": {
-    "@vanillaes/esmtk": "^0.24.3"
-  },
   "lint": {
     "files": "*/**.mjs",
     "fix": true,
     "ignore": [
       "test/"
     ]
+  },
+  "devDependencies": {
+    "@vanillaes/esmtk": "^1.0.0"
   }
 }
