@@ -6,7 +6,7 @@ import { ESLint } from 'eslint'
 /**
  * Lint the following files
  * @param {string} file the pattern(s) of file(s) to include
- * @param {string | boolean | string[] | undefined} options lint options
+ * @param {object} options lint options
  */
 export async function lint (file, options) {
   const cwd = `${resolve(options?.cwd)}`
@@ -105,7 +105,7 @@ export async function fileExists (path) {
 /**
  * Read .gitignore
  * @param {string} cwd the current working directory
- * @returns {string[]} a comma-deliminated list of ignore globs
+ * @returns {Promise<string[]>} a comma-deliminated list of ignore globs
  */
 async function readGitIgnore (cwd) {
   const path = join(cwd, '.gitignore')
@@ -123,8 +123,8 @@ async function readGitIgnore (cwd) {
 /**
  * Read Config from package.json
  * @param {string} cwd the current working directory
- * @param {dict} options a dict of config options
- * @returns {dict} a dict of config options
+ * @param {object} options a dict of config options
+ * @returns {Promise<object>} a dict of config options
  */
 async function applyPackageJSON (cwd, options = {}) {
   const path = join(cwd, 'package.json')

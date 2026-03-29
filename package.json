@@ -30,9 +30,8 @@
   "scripts": {
     "test": "esmtk test",
     "lint": "esmtk lint",
-    "types": "esmtk types src/index.js",
+    "type": "esmtk type src/index.js --module nodenext && esmtk type bin/lint-es.js --module nodenext",
     "typings": "esmtk typings src/index.js",
-    "build:neostandard": "neostandard --esm > src/configs/neostandard.config.js",
     "clean": "esmtk clean --typings",
     "preview": "esmtk preview",
     "preversion": "npm run test && npm run lint",
@@ -43,14 +42,8 @@
     "eslint-plugin-jsdoc": "^62.8.1",
     "neostandard": "^0.13.0"
   },
-  "lint": {
-    "files": "*/**.mjs",
-    "fix": true,
-    "ignore": [
-      "test/"
-    ]
-  },
   "devDependencies": {
+    "@types/node": "^25.5.0",
     "@vanillaes/esmtk": "^1.1.0"
   }
 }
