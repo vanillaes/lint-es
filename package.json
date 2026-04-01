@@ -1,6 +1,6 @@
 {
   "name": "@vanillaes/lint-es",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Modern linting for ECMAScript Modules",
   "keywords": [
     "ecmascript",
