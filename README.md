@@ -1,6 +1,8 @@
 <h1 align="center">Lint-ES</h1>
 
-Modern linting for ECMAScript Modules based on **[StandardJS][]**.
+<div align="center">🧹  Modern linting for ECMAScript Modules based on <a href="https://standardjs.com/">StandardJS</a>  🧹</div>
+
+<br />
 
 <div align="center">
   <a href="https://github.com/vanillaes/lint-es/releases"><img src="https://badgen.net/github/tag/vanillaes/lint-es?cache-control=no-cache" alt="GitHub Release"></a>
