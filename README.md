@@ -28,10 +28,10 @@ Modern linting for ECMAScript Modules based on **[StandardJS][]**.
 
 `lint-es [...options] [files...]`
 
-- `[files]` - file(s) to lint (default `**/*.js`)
-- `--cwd [cwd]` - The working directory (default `process.cwd()`)
+- `[files]` - File(s) to lint (default `**/*.js`)
+- `--cwd` - Current working directory (default `process.cwd()`)
 - `--fix` - Automatically fix problems
-- `--ignore [ignores]` - Specify file(s) to ignore
+- `--ignore` - File(s) to ignore
 
 ### Usage
 
