@@ -39,7 +39,7 @@ export async function lint (file, options) {
   // Edge-Case: Exit early if no files are matched (ie to avoid ambiguous ESLing error)
   const fileList = await match(files.join(','), cwd, ignores.join(','))
   if (fileList.length === 0) {
-    console.error(`lint-es: No files matching '${files.join(',')}' were found`)
+    console.log(`lint-es: No files matching '${files.join(',')}' were found`)
     process.exitCode = 0
     return
   }
