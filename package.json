@@ -30,7 +30,7 @@
   "scripts": {
     "lint-es": "node ./bin/lint-es.js",
     "test": "esmtk test",
-    "lint": "esmtk lint",
+    "lint": "node ./bin/lint-es.js",
     "type": "esmtk type src/index.js --module nodenext && esmtk type bin/lint-es.js --module nodenext",
     "typings": "esmtk typings --module nodenext src/index.js",
     "clean": "esmtk clean --typings",

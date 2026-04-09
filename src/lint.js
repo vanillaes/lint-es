@@ -1,5 +1,5 @@
 import config from './configs/eslint.config.js'
-import { fileExists, readGitIgnore } from '@vanillaes/esmtk'
+import { fileExists, match, readGitIgnore } from '@vanillaes/esmtk'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { ESLint } from 'eslint'
@@ -35,6 +35,14 @@ export async function lint (file, options) {
   ignores = [...ignores, ...defaultIgnores, ...gitIgnores]
   // de-duplicate
   ignores = [...new Set(ignores)]
+
+  // Edge-Case: Exit early if no files are matched (ie to avoid ambiguous ESLing error)
+  const fileList = await match(files.join(','), cwd, ignores.join(','))
+  if (fileList.length === 0) {
+    console.error(`lint-es: No files matching '${files.join(',')}' were found`)
+    process.exitCode = 0
+    return
+  }
 
   let results = []
   try {
