@@ -1,5 +1,5 @@
 import config from './configs/eslint.config.js'
-import { fileExists, match, readGitIgnore } from '@vanillaes/esmtk'
+import { exists, match, readGitIgnore } from '@vanillaes/esmtk'
 import { readFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { ESLint } from 'eslint'
@@ -11,8 +11,8 @@ import { ESLint } from 'eslint'
  */
 export async function lint (file, options) {
   const cwd = `${resolve(options?.cwd)}`
-  const exists = await fileExists(cwd)
-  if (!exists) {
+  const cwdExists = await exists(cwd)
+  if (!cwdExists) {
     console.error(`lint-es: ${cwd} No such file or directory`)
     process.exitCode = 1
     return
@@ -106,8 +106,8 @@ export async function lint (file, options) {
  */
 async function applyPackageJSON (cwd, options = {}) {
   const path = join(cwd, 'package.json')
-  const exists = await fileExists(path)
-  if (!exists) {
+  const pExists = await exists(path)
+  if (!pExists) {
     return options
   }
 

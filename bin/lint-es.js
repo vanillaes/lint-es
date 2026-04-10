@@ -1,17 +1,12 @@
 #!/usr/bin/env node
 import { lint } from '../src/index.js'
-import { createRequire } from 'node:module'
+import { Package } from '@vanillaes/esmtk'
 import { Command } from 'commander'
-const require = createRequire(import.meta.url)
-const pkg = require('../package.json')
 
+const pkg = new Package()
 const program = new Command()
   .name('lint-es')
-  .description('Modern linting for ECMAScript Modules')
-  .version(pkg.version, '-v, --version')
-
-program
-  .description('Lint file(s) matching the provided pattern (default *.spec.js)')
+  .version(pkg?.version, '-v, --version')
   .usage(`lint-es [...options] [files...]
     If [files...] is omitted, all JavaScript source files (**/*.js)
     in the current working directory are checked, recursively.
@@ -21,6 +16,7 @@ program
 
     Paths in a project's .gitignore file are also automatically ignored.
   `)
+  .description('Modern linting for ECMAScript Modules')
   .argument('[files]', 'file(s) to lint', '**/*.js')
   .option('--cwd [cwd]', 'current working directory', process.cwd())
   .option('--fix', 'automatically fix problems')
