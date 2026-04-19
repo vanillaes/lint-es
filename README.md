@@ -6,8 +6,9 @@
 
 <div align="center">
   <a href="https://github.com/vanillaes/lint-es/releases"><img src="https://badgen.net/github/tag/vanillaes/lint-es?cache-control=no-cache" alt="GitHub Release"></a>
-  <a href="https://www.npmjs.com/package/@vanillaes/lint-es"><img src="https://badgen.net/npm/v/@vanillaes/lint-es?icon=npm" alt="NPM Version"></a>
-  <a href="https://www.npmjs.com/package/@vanillaes/lint-es"><img src="https://badgen.net/npm/dm/@vanillaes/lint-es?icon=npm" alt="NPM Downloads"></a>
+ <a href="https://npmjs.com/package/@vanillaes/lint-es"><img src="https://badgen.net/npm/dw/@vanillaes/lint-es?icon=npm" alt="NPM Weekly Downloads"></a>
+  <a href="https://jsr.io/@vanillaes/lint-es"><img src="https://jsr.io/badges/@vanillaes/lint-es/weekly-downloads" alt="JSR Weekly Downloads"></a>
+  <a href="https://jsr.io/@vanillaes/lint-es"><img src="https://jsr.io/badges/@vanillaes/lint-es/score" alt="JSR Score"></a>
   <a href="https://github.com/vanillaes/lint-es/actions"><img src="https://github.com/vanillaes/lint-es/workflows/Latest/badge.svg" alt="Latest Status"></a>
   <a href="https://github.com/vanillaes/lint-es/actions"><img src="https://github.com/vanillaes/lint-es/workflows/Release/badge.svg" alt="Release Status"></a>
 </div>

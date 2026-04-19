@@ -32,10 +32,11 @@
     "test": "esmtk test",
     "lint": "node ./bin/lint-es.js",
     "type": "esmtk type src/index.js --module nodenext --types node && esmtk type bin/lint-es.js --module nodenext --types node",
-    "typings": "esmtk typings --module nodenext --types node src/index.js",
+    "build": "esmtk typings --module nodenext --types node src/index.js",
     "clean": "esmtk clean --typings",
     "preview": "esmtk preview",
-    "preversion": "npm run test && npm run lint",
+    "preversion": "npm run test && npm run lint && npm run type",
+    "version": "npm run clean && npm run build && git add **/*.d.ts",
     "postversion": "git push --follow-tags"
   },
   "dependencies": {
