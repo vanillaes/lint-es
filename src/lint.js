@@ -1,16 +1,38 @@
-import config from './configs/eslint.config.js'
+import { LintConfig } from './index.js'
+import eslintConfig from './configs/eslint.config.js'
 import { exists, match, readGitIgnore } from '@vanillaes/esmtk'
-import { readFile } from 'node:fs/promises'
-import { join, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import { ESLint } from 'eslint'
+
+const DEFAULT_FILES = [
+  '**/*.js'
+]
+
+const DEFAULT_IGNORE = [
+  '**/*.min.js',
+  'coverage/**',
+  'node_modules/',
+  'vendor/',
+  '.*'
+]
 
 /**
  * Lint the following files
- * @param {string} file the pattern(s) of file(s) to include
- * @param {object} options lint options
+ * @param {string} files File(s)/glob(s) to lint
+ * @param {object} [options] 'lint' options
+ * @param {string} [options.cwd] Current working directory
+ * @param {boolean} [options.fix] Automatically fix problems
+ * @param {string} [options.ignore] File(s)/glob(s) to ignore
  */
-export async function lint (file, options) {
-  const cwd = `${resolve(options?.cwd)}`
+export async function lint (files, options = {}) {
+  let {
+    cwd = process.cwd(),
+    fix,
+    ignore
+  } = options
+
+  // current working directory
+  cwd = `${resolve(cwd)}`
   const cwdExists = await exists(cwd)
   if (!cwdExists) {
     console.error(`lint-es: ${cwd} No such file or directory`)
@@ -18,28 +40,41 @@ export async function lint (file, options) {
     return
   }
 
-  // check package.json config
-  let { files, fix, ignores } = await applyPackageJSON(cwd, { files: [], fix: false, ignores: [] })
+  // extract config from package.json
+  const config = new LintConfig(cwd)
 
-  // [file] argument
-  if (file) {
-    files = file.includes(',') ? file.split(',') : [file]
+  // [files] argument
+  /** @type {string[]} */
+  let filesArr = []
+  if (config.files) {
+    filesArr = config.files
   }
+  if (files) {
+    filesArr = files.includes(',') ? files.split(',') : [files]
+  }
+  filesArr = [...filesArr, ...DEFAULT_FILES]
+  filesArr = [...new Set(filesArr)]
+
+  // --fix option
+  fix = fix || config.fix || false
 
   // --ignore option
-  if (options?.ignore) {
-    ignores = options.ignore.includes(',') ? options.ignore.split(',') : [options.ignore]
+  /** @type {string[]} */
+  let ignoreArr = []
+  if (config.ignore) {
+    ignoreArr = config.ignore
   }
-  const defaultIgnores = ['node_modules/', 'coverage/', 'vendor/', '**/*.min.js', '.*']
-  const gitIgnores = await readGitIgnore(cwd)
-  ignores = [...ignores, ...defaultIgnores, ...gitIgnores]
-  // de-duplicate
-  ignores = [...new Set(ignores)]
+  if (ignore) {
+    ignoreArr = ignore.includes(',') ? ignore.split(',') : [ignore]
+  }
+  const gitIgnore = await readGitIgnore(cwd)
+  ignoreArr = [...ignoreArr, ...DEFAULT_IGNORE, ...gitIgnore]
+  ignoreArr = [...new Set(ignoreArr)]
 
   // Edge-Case: Exit early if no files are matched (ie to avoid ambiguous ESLing error)
-  const fileList = await match(files.join(','), cwd, ignores.join(','))
+  const fileList = await match(filesArr.join(','), cwd, ignoreArr.join(','))
   if (fileList.length === 0) {
-    console.log(`lint-es: No files matching '${files.join(',')}' were found`)
+    console.log(`lint-es: No files matching '${filesArr.join(',')}' were found`)
     process.exitCode = 0
     return
   }
@@ -48,12 +83,12 @@ export async function lint (file, options) {
   try {
     const eslint = new ESLint({
       cwd,
-      ignorePatterns: ignores,
+      ignorePatterns: ignoreArr,
       overrideConfigFile: true,
-      overrideConfig: config,
+      overrideConfig: eslintConfig,
       fix
     })
-    results = await eslint.lintFiles(files)
+    results = await eslint.lintFiles(filesArr)
 
     if (fix) {
       await ESLint.outputFixes(results)
@@ -95,56 +130,4 @@ export async function lint (file, options) {
   }
 
   process.exitCode = hasErrors ? 1 : 0
-}
-
-/**
- * Read Lint Config from package.json
- * @private
- * @param {string} cwd the current working directory
- * @param {object} options a dict of config options
- * @returns {Promise<object>} a dict of config options
- */
-async function applyPackageJSON (cwd, options = {}) {
-  const path = join(cwd, 'package.json')
-  const pExists = await exists(path)
-  if (!pExists) {
-    return options
-  }
-
-  const contents = await readFile(path, 'utf8')
-  const pkg = JSON.parse(contents)
-
-  if (!Object.hasOwn(pkg, 'lint')) {
-    return options
-  }
-
-  if (pkg?.lint?.files) {
-    if (!Array.isArray(pkg.lint.files) && typeof pkg.lint.files !== 'string') {
-      return options
-    }
-
-    if (Array.isArray(pkg.lint.files)) {
-      options.files = pkg.lint.files
-    }
-
-    if (typeof pkg.lint.files === 'string') {
-      options.files = [pkg.lint.files]
-    }
-  }
-
-  if (pkg?.lint?.fix) {
-    if (typeof pkg.lint.fix !== 'boolean') {
-      return options
-    }
-    options.fix = pkg.lint.fix
-  }
-
-  if (pkg?.lint?.ignore) {
-    if (!Array.isArray(pkg.lint.ignore)) {
-      return options
-    }
-    options.ignores = pkg.lint.ignore
-  }
-
-  return options
 }

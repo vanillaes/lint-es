@@ -30,10 +30,10 @@
 
 `lint-es [...options] [files...]`
 
-- `[files]` - File(s) to lint (default `**/*.js`)
-- `--cwd` - Current working directory (default `process.cwd()`)
+- `[files]` - File(s)/glob(s) to lint (default `**/*.js`)
+- `--cwd` - Current working directory
 - `--fix` - Automatically fix problems
-- `--ignore` - File(s) to ignore
+- `--ignore` - File(s)/glob(s) to ignore
 
 ### Usage
 
