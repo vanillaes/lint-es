@@ -1,6 +1,6 @@
 {
   "name": "@vanillaes/lint-es",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "license": "MIT",
   "exports": {
     ".": "./src/index.js"
