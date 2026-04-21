@@ -1,32 +1,17 @@
 import { Package } from '@vanillaes/esmtk'
 
+/** @typedef {import('@vanillaes/esmtk').RawPackage} RawPackage */
+
 /**
- * @typedef {object} RawLintPackage
- * @property {string|undefined} [name] Name
- * @property {string|undefined} [version] Version
- * @property {string|undefined} [description] Description
- * @property {string[]|undefined} [keywords] Keywords
- * @property {string|undefined} [repository] Repository
- * @property {string|undefined} [author] Author
- * @property {string|undefined} [license] License
- * @property {string|undefined} [type] Type
- * @property {{[key: string]: {[key: string]: string}}|undefined} [bin] Binaries
- * @property {{[key: string]: {[key: string]: string}}|undefined} [exports] Exports
- * @property {{[key: string]: {[key: string]: string}}|undefined} [scripts] Scripts
- * @property {object|undefined} [engines] Engines
- * @property {object|undefined} [dependencies] Dependencies
- * @property {object|undefined} [devDependencies] DevDependencies
- * @property {RawLintConfig} [lint] Lint Config
- * @property {string|string[]} [lint.files] Lint files Config option
+ * @typedef {object} RawLintConfig
+ * @property {object|undefined} [lint] Lint config
+ * @property {string|string[]} [lint.files] Lint files config option
  * @property {boolean} [lint.fix] Lint fix config option
  * @property {string|string[]} [lint.ignore] Lint ignore config option
  */
 
 /**
- * @typedef {object} RawLintConfig
- * @property {string|string[]} [files] Lint files Config option
- * @property {boolean} [fix] Lint fix config option
- * @property {string|string[]} [ignore] Lint ignore config option
+ * @typedef {RawPackage & RawLintConfig} RawLintPackage
  */
 
 /**
