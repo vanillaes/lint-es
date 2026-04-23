@@ -19,7 +19,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "lint-es": "bin/lint-es.js"
+    "lint-es": "bin/index.js"
   },
   "exports": {
     ".": {
@@ -28,10 +28,10 @@
     }
   },
   "scripts": {
-    "lint-es": "node ./bin/lint-es.js",
+    "lint-es": "node ./bin/index.js",
     "test": "esmtk test",
-    "lint": "node ./bin/lint-es.js",
-    "type": "esmtk type src/index.js --module nodenext --types node && esmtk type bin/lint-es.js --module nodenext --types node",
+    "lint": "node ./bin/index.js",
+    "type": "esmtk type src/index.js --module nodenext --types node && esmtk type bin/index.js --module nodenext --types node",
     "build": "esmtk typings --module nodenext --types node src/index.js",
     "clean": "esmtk clean --typings",
     "preview": "esmtk preview",
