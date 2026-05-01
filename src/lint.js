@@ -1,6 +1,6 @@
 import { LintConfig } from './index.js'
 import eslintConfig from './configs/eslint.config.js'
-import { exists, match, readGitIgnore } from '@vanillaes/esmtk'
+import { exists, matchAll, readGitIgnore } from '@vanillaes/esmtk'
 import { resolve } from 'node:path'
 import { ESLint } from 'eslint'
 
@@ -18,13 +18,13 @@ const DEFAULT_IGNORE = [
 
 /**
  * Lint the following files
- * @param {string} files File(s)/glob(s) to lint
+ * @param {string} [pattern] Pattern(s) used to locate the test files
  * @param {object} [options] 'lint' options
  * @param {string} [options.cwd] Current working directory
  * @param {boolean} [options.fix] Automatically fix problems
  * @param {string} [options.ignore] File(s)/glob(s) to ignore
  */
-export async function lint (files, options = {}) {
+export async function lint (pattern, options = {}) {
   let {
     cwd = process.cwd(),
     fix,
@@ -40,41 +40,13 @@ export async function lint (files, options = {}) {
     return
   }
 
-  // extract config from package.json
-  const config = new LintConfig(cwd)
-
-  // [files] argument
-  /** @type {string[]} */
-  let filesArr = []
-  if (config.files) {
-    filesArr = config.files
-  }
-  if (files) {
-    filesArr = files.includes(',') ? files.split(',') : [files]
-  }
-  filesArr = [...filesArr, ...DEFAULT_FILES]
-  filesArr = [...new Set(filesArr)]
-
-  // --fix option
-  fix = fix || config.fix || false
-
-  // --ignore option
-  /** @type {string[]} */
-  let ignoreArr = []
-  if (config.ignore) {
-    ignoreArr = config.ignore
-  }
-  if (ignore) {
-    ignoreArr = ignore.includes(',') ? ignore.split(',') : [ignore]
-  }
-  const gitIgnore = await readGitIgnore(cwd)
-  ignoreArr = [...ignoreArr, ...DEFAULT_IGNORE, ...gitIgnore]
-  ignoreArr = [...new Set(ignoreArr)]
+  let files, exclude
+  ({ files, fix, exclude } = await consolidateConfig(pattern, fix, ignore, cwd))
 
   // Edge-Case: Exit early if no files are matched (ie to avoid ambiguous ESLing error)
-  const fileList = await match(filesArr.join(','), cwd, ignoreArr.join(','))
+  const fileList = await matchAll(files, cwd, exclude)
   if (fileList.length === 0) {
-    console.log(`lint-es: No files matching '${filesArr.join(',')}' were found`)
+    console.log(`lint-es: No files matching '${files.join(',')}' were found`)
     process.exitCode = 0
     return
   }
@@ -83,12 +55,12 @@ export async function lint (files, options = {}) {
   try {
     const eslint = new ESLint({
       cwd,
-      ignorePatterns: ignoreArr,
+      ignorePatterns: exclude,
       overrideConfigFile: true,
       overrideConfig: eslintConfig,
       fix
     })
-    results = await eslint.lintFiles(filesArr)
+    results = await eslint.lintFiles(files)
 
     if (fix) {
       await ESLint.outputFixes(results)
@@ -130,4 +102,51 @@ export async function lint (files, options = {}) {
   }
 
   process.exitCode = hasErrors ? 1 : 0
+}
+
+/**
+ * Consiolidate the configurations (input, config, defaults)
+ * @private
+ * @param {string} [pattern] Pattern(s) used to locate the lint files
+ * @param {boolean} [fix] Automatically fix problems
+ * @param {string} [ignore] Pattern(s) used to ignore
+ * @param {string} [cwd] Current working directory
+ * @returns {Promise<{files: string[], fix: boolean, exclude: string[]}>} an object containing (files, exclude)
+ */
+async function consolidateConfig (pattern = '', fix, ignore = '', cwd = process.cwd()) {
+  // extract config from package.json
+  const config = new LintConfig(cwd)
+
+  // consolidate file pattern(s)
+  /** @type {string[]} */
+  let files = []
+  if (config.files) {
+    files = config.files
+  }
+  if (pattern) {
+    files = pattern.includes(',') ? pattern.split(',') : [pattern]
+  }
+  if (files.length === 0) {
+    files = DEFAULT_FILES
+  }
+  files = [...new Set(files)]
+
+  // consolidate --fix option
+  if (!fix) {
+    fix = config.fix || false
+  }
+
+  // consolidate ignore pattern(s)
+  let exclude = [...DEFAULT_IGNORE]
+  if (config.ignore) {
+    exclude = config.ignore
+  }
+  if (ignore) {
+    exclude = ignore.includes(',') ? ignore.split(',') : [ignore]
+  }
+  const gitIgnore = await readGitIgnore(cwd)
+  exclude = [...exclude, ...DEFAULT_IGNORE, ...gitIgnore]
+  exclude = [...new Set(exclude)]
+
+  return { files, fix, exclude }
 }

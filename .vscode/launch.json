@@ -8,7 +8,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "cwd": "${workspaceFolder}",
             "args": ["--version"],
             "console": "integratedTerminal",
@@ -20,7 +20,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
         },
@@ -31,7 +31,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "args": ["**/*.mjs"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
@@ -43,7 +43,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "args": ["--fix"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
@@ -55,7 +55,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "args": ["--ignore", "test/"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
@@ -67,7 +67,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/bin/lint-es.js",
+            "program": "${workspaceFolder}/bin/index.js",
             "args": ["--cwd", "test/"],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
